@@ -1,0 +1,108 @@
+.page {
+  height: 100vh;
+  display: flex;
+  background-color: var(--background-color);
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: '. form panel';
+    grid-column-gap: 50px;
+    text-align: center;
+    margin: 0 auto;
+    min-width: 1150px;
+    height: 100%;
+
+    &_form {
+      grid-area: form;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      &_title {
+        color: var(--color-accent);
+        font-size: 20px;
+        font-weight: 400;
+        font-family: 'Balloo';
+        margin-bottom: 50px;
+      }
+    }
+    &_stepper {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 40px;
+    }
+    &_panel {
+      grid-area: panel;
+      background-color: var(--color-accent);
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 223px;
+        color: var(--main-color);
+        font-size: 40px;
+        padding-top: 30px;
+        font-weight: 800;
+        background-image: var(--header-image-global);
+        background-repeat: no-repeat;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        text-align: start;
+        padding: 15px;
+        color: var(--color-accent);
+        background-color: var(--background-color);
+        &_title {
+          color: var(--color-text);
+        }
+        &_addPet {
+          color: var(--color-text);
+          font-weight: 400;
+          font-size: 14px;
+        }
+      }
+
+      .haveAccount {
+        padding-bottom: 30px;
+        color: var(--color-text);
+
+        a {
+          text-decoration: none;
+          color: var(--main-color);
+        }
+      }
+    }
+  }
+}
+
+.inputSection {
+  width: 100%;
+  .input {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.goBackSection {
+
+  .goBack {
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--color-additional);
+    padding-right: 290px;
+    padding-bottom: 20px;
+  }
+}

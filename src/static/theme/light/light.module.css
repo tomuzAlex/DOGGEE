@@ -1,0 +1,16 @@
+.conteiner {
+  --color-text: #000;
+  --main-color: #fff;
+
+  --color-placeholder: rgba(0, 0, 0, 0.5);
+  --color-label: gray;
+  --color-field-focused: #ededed;
+  --background-color-field: rgba(237, 237, 237, 0.7);
+  --background-color: #fff;
+  --background-color-panel: #f5c678;
+  --input-bg: rgba(237, 237, 237, 0.7);
+  --shadow-button: 0px 0px 8px 2px rgba(70, 74, 77, 0.15);
+
+  --header-image: url('../light/dogge_background.svg');
+  --images-checkmark-additional: url('../light/checkmark.svg');
+}

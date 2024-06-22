@@ -1,0 +1,120 @@
+* {
+  box-sizing: border-box;
+}
+
+.input {
+  height: 48px;
+  background: var(--color-field-focused);
+  background: var(--input-bg);
+  border-radius: 5px;
+  padding: 10px 10px 5px;
+  border: none;
+  font-size: 13px;
+  color: var(--color-text);
+  &:active,
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background: var(--color-field-focused);
+  }
+
+  &_conteiner {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    label {
+      position: absolute;
+      top: 5px;
+      left: 10px;
+      font-size: 15px;
+      color: var(--color-label);
+
+      transition:
+        transform 150ms ease-out,
+        font-size 150ms ease-out;
+    }
+
+    .label {
+      transform: translateY(-50%) translateX(-50%);
+      font-size: 10px;
+      color: black;
+    }
+
+    &_toggle {
+      position: absolute;
+      top: 15px;
+      right: 10px;
+      cursor: pointer;
+    }
+    &_date {
+      -webkit-appearance: none; /* Hide the default icon in WebKit browsers */
+      -moz-appearance: none; /* Hide the default icon in Firefox */
+      appearance: none; /* Hide the default icon in other browsers */
+      padding-right: 20px; /* Add some padding to make space for a custom icon */
+    }
+  }
+}
+
+.inputConteiner {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  .label {
+    transform: translateY(-50%) translateX(-10%);
+    font-size: 10px;
+    padding-left: 5px;
+    color: var(--color-placeholder);
+  }
+
+  .indicator {
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 15px;
+    color: var(--color-label);
+
+    transition:
+      transform 150ms ease-out,
+      font-size 150ms ease-out;
+  }
+}
+
+.inputError {
+  background-color: var(--color-validation7);
+  &:hover {
+    background: var(--color-validation7);
+  }
+}
+
+.helperText {
+  color: var(--color-text-validation);
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 300;
+  padding-left: 10px;
+}
+
+.inputSvg {
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.dateInput {
+  position: relative;
+  .calendarSvg {
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+  }
+}

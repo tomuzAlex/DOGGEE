@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .line {
+    height: 2px;
+    background-color: var(--color-field-focused);
+  }
+
+  .title {
+    color: var(--color-text);
+    font-size: 14px;
+  };
+
+  .add_pet {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--color-text);
+    text-align: center;
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+
+    &_plus {
+        width: 16px;
+        height: 16px;
+    }
+  }
+}

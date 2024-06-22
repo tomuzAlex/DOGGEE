@@ -1,0 +1,13 @@
+.conteiner {
+    --color-text: #fff;
+    --main-color: #fff;
+    --color-placeholder: rgba(255,255,255,0.5);
+    --color-label: #dcd9d9;
+    --color-field-focused: #575c63;
+    --background-color: rgb(63, 68, 71);
+    --background-color7: rgba(21, 21, 21, 0.7); 
+    --input-bg: rgba(69, 74, 78, 0.8);
+
+    --header-image: url('../dark/dogge_backgroundBlack.svg');
+    --images-checkmark-additional: url('../dark/checkmark.svg');
+}

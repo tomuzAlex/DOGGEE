@@ -1,0 +1,13 @@
+{
+  "page.login.CreateNewAccount": "Создать новый аккаунт",
+  "page.login.checkbox": "Это не мой девайс",
+  "page.login.input.username": "Пользователь",
+  "page.login.input.password": "Пароль",
+  "page.login.helperText": "Это обязательное поле для заполнения",
+  "page.registration": "Заполните свой логин и пароль",
+  "page.registration.passwordAgain": "Повторите пароль",
+  "page.registration.IhaveAccount": "У меня уже есть аккаунт",
+  "button.signIn": "Войти",
+  "button.done": "Готово",
+  "button.next": "Далее"
+}

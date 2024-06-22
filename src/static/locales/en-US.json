@@ -1,0 +1,15 @@
+{
+  "page.login.CreateNewAccount": "Create new account",
+  "page.login.checkbox": "This is not my device",
+  "page.login.input.username": "User",
+  "page.login.input.password": "Password",
+  "page.login.helperText": "field required",
+  "page.registration": "Fill your login",
+  "page.registration.passwordAgain": "Password again",
+  "page.registration.IhaveAccount": "I have an account",
+  "button.signIn": "Sign in",
+  "button.done": "Done",
+  "button.next": "Next"
+}
+
+

@@ -1,7 +1,20 @@
 .button {
-    background-color: #f5c678;
-    border-radius: 5px;
-    border: none;
-    padding: 10px 80px;
-    color: white;
+  background-color: var(--color-accent);
+  border-radius: 5px;
+  border: none;
+  height: 48px;
+  width: 100%;
+  padding: 15.5px 102.5px;
+  box-shadow: var(--shadow-button);
+  color: var(--main-color);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--secondary);
+    box-shadow: var(--shadow-button);
+  }
+
+  &:active {
+    background: var(--color-accent7);
+  }
 }
