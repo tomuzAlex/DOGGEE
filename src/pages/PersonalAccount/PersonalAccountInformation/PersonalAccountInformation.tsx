@@ -97,9 +97,9 @@ export const PersonalAccountInformation: React.FC<PersonalAccountInformationProp
                     pets.map((pet) => (
                       <div key={pet.id} className={styles.profile_container}>
                         <div>{pet.username}</div>
-                        <div>
-                          {pet.breed}
-                          {pet.dogWeight} kg
+                        <div className={styles.pet_info}>
+                          <div>{pet.breed}</div>
+                          <div>{pet.dogWeight} kg</div>
                         </div>
                       </div>
                     ))
