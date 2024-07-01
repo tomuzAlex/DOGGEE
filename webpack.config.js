@@ -4,42 +4,49 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js', // Entry point of your application
+  entry: './src/index.tsx', 
   output: {
-    path: path.resolve(__dirname, 'dist'), // Output directory
-    filename: 'bundle.js', // Output bundle file
+    path: path.resolve(__dirname, 'dist'), 
+    filename: 'bundle.js', 
   },
-  mode: 'development', // Set to 'production' for production builds
+  mode: 'development', 
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'), // Serve from 'dist' directory
+    contentBase: path.resolve(__dirname, 'dist'), //
     compress: true,
     port: 9000, 
   },
   module: {
     rules: [
       {
-        test: /\.js$/, // Transpile .js and .jsx files
+        test: /\.(js|jsx)$/, 
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
         },
       },
       {
-        test: /\.scss$/, // Process SCSS files
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+        },
+      },
+      {
+        test: /\.scss$/, 
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.css$/, // Process CSS files
+        test: /\.css$/, 
         use: ['style-loader', 'css-loader'],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html', // Template HTML file
+      template: './public/index.html', 
     }),
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', 'js', 'jsx'], // Resolve these extensions
+    extensions: ['.ts', '.tsx', '.js', '.jsx'], 
   },
 };
