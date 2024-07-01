@@ -78,6 +78,25 @@
   border-radius: 5px;
   margin-top: 5px;
 
+  max-height: 200px; // Adjust this value based on your preference
+  overflow-y: auto; // Enables vertical scrolling
+  scrollbar-width: thin; // Makes the scrollbar thinner
+  scrollbar-color: #888 #f0f0f0; // Optionally style the scrollbar (for Firefox)
+  
+  &::-webkit-scrollbar {
+    width: 8px; // Width of the scrollbar for Webkit browsers (Chrome, Safari)
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0; // Track color
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888; // Handle color
+    border-radius: 10px; // Optional: rounded corners for the handle
+    border: 2px solid #f0f0f0; // Optional: adds some border around the handle
+  }
+
   &_container {
     cursor: pointer;
     text-align: start;

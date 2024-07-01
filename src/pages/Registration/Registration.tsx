@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Registration.module.scss';
 import { PasswordRules } from './PasswordRules';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { IntlText } from '@features/I18n';
 import { useTheme } from '@features/theming';
@@ -9,36 +9,43 @@ import { useTheme } from '@features/theming';
 import { Input, PasswordInput, Button } from '@common/fields';
 
 import { useForm } from '@utils/hooks';
+import axios from 'axios';
 
 export const validateFormEmpty = (value: string) => {
   if (!value) {
-    return 'field required';
+    return 'Field required';
   }
   return null;
 };
-export const validateFormUsername = (username: string) => {
-  return validateFormEmpty(username);
-};
-export const validateFormPassword = (pass: string) => {
-  return validateFormEmpty(pass);
-};
-export const loginFormValidate = {
-  username: validateFormUsername,
-  password: validateFormPassword,
-  passwordAgain: validateFormPassword,
-};
-export const validateLoginForm = (
-  name: 'username' | 'password' | 'passwordAgain',
-  value: string,
-) => {
-  return loginFormValidate[name](value);
+
+export const validatePassword = (password: string) => {
+  const errors = [];
+  if (!/[0-9]/.test(password)) {
+    errors.push('Password must contain at least one number');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters long');
+  }
+  return errors.length ? errors.join(', ') : null;
 };
 
-export interface FormValue {
-  username: string;
-  password: string;
-  isNotMyComputer: boolean;
-}
+export const validatePasswordsMatch = (password: string, passwordAgain: string) => {
+  return password !== passwordAgain ? 'Passwords do not match' : null;
+};
+
+export const validateForm = (values: RegistrationFormValues) => {
+  return {
+    username: validateFormEmpty(values.username),
+    password: validatePassword(values.password),
+    passwordAgain: validatePasswordsMatch(values.password, values.passwordAgain),
+  };
+};
 
 interface RegistrationFormValues {
   username: string;
@@ -49,8 +56,9 @@ interface RegistrationFormValues {
 }
 
 export const Registration: React.FC = () => {
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { values, setFieldValue } = useForm<RegistrationFormValues>({
+  const { values, setFieldValue, handleSubmit } = useForm<RegistrationFormValues>({
     initialValue: {
       username: '',
       password: '',
@@ -58,35 +66,23 @@ export const Registration: React.FC = () => {
       select: '',
       dateInput: '',
     },
+    validate: validateForm,
+    onSubmit: async (values) => {
+      try {
+        await axios.post('https://66147b222fc47b4cf27c6734.mockapi.io/users', {
+          username: values.username,
+          password: values.password,
+        });
+        navigate('/PersonalAccount');
+      } catch (error) {
+        console.error('Registration failed:', error);
+        setFormError({
+          ...formError,
+          username: 'Registration failed, please try again',
+        });
+      }
+    },
   });
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Check if all fields are valid
-    const usernameError = validateLoginForm('username', values.username);
-    const passwordError = validateLoginForm('password', values.password);
-    const passwordAgainError = validateLoginForm('passwordAgain', values.passwordAgain);
-
-    if (usernameError || passwordError || passwordAgainError) {
-      return;
-    }
-
-    // Save user information to local storage
-    localStorage.setItem(
-      'user',
-      JSON.stringify({
-        username: values.username,
-        password: values.password,
-        passwordAgain: values.passwordAgain,
-      }),
-    );
-
-    // Clear form values
-
-    // setFieldValue('passwordAgain', '');
-    // setFieldValue('password', '');
-    // setFieldValue('username', '');
-  };
 
   const [formError, setFormError] = React.useState<{ [key: string]: string | null }>({
     username: null,
@@ -118,7 +114,7 @@ export const Registration: React.FC = () => {
                     const username = e.target.value;
                     setFieldValue('username', username);
 
-                    const error = validateLoginForm('username', username);
+                    const error = validateFormEmpty(username);
                     setFormError({ ...formError, username: error });
                   }}
                   {...(!!formError.username && {
@@ -136,7 +132,7 @@ export const Registration: React.FC = () => {
                     const password = e.target.value;
                     setFieldValue('password', password);
 
-                    const error = validateLoginForm('password', password);
+                    const error = validatePassword(password);
                     setFormError({ ...formError, password: error });
                   }}
                   {...(!!formError.password && {
@@ -145,36 +141,28 @@ export const Registration: React.FC = () => {
                   })}
                 />
                 <PasswordInput
-                  label="Password"
+                  label="Password Again"
                   type="password"
                   mask={regex}
                   value={values.passwordAgain}
-                  isError={!!formError.password}
+                  isError={!!formError.passwordAgain}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const password = e.target.value;
-                    setFieldValue('passwordAgain', password);
+                    const passwordAgain = e.target.value;
+                    setFieldValue('passwordAgain', passwordAgain);
 
-                    const error = validateLoginForm('password', password);
-                    setFormError({ ...formError, password: error });
+                    const error = validatePasswordsMatch(values.password, passwordAgain);
+                    setFormError({ ...formError, passwordAgain: error });
                   }}
-                  {...(!!formError.password && {
-                    isError: !!formError.password,
-                    helperText: formError.password,
+                  {...(!!formError.passwordAgain && {
+                    isError: !!formError.passwordAgain,
+                    helperText: formError.passwordAgain,
                   })}
                 />
               </div>
               <div>
-                {checkValues ? (
-                  <Link to="/personalAccount">
-                    <Button className={styles.button_done} type="submit">
-                      <IntlText path="button.done" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button className={styles.button_done} type="submit">
-                    <IntlText path="button.done" />
-                  </Button>
-                )}
+                <Button className={styles.button_done} type="submit" disabled={!checkValues}>
+                  <IntlText path="button.done" />
+                </Button>
               </div>
             </form>
           </div>
@@ -188,7 +176,7 @@ export const Registration: React.FC = () => {
               />
             </div>
             <div className={styles.haveAccount}>
-              <Link to="/login">
+              <Link to="/">
                 <IntlText path="page.registration.IhaveAccount" />
               </Link>
             </div>

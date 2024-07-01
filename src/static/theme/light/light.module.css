@@ -9,6 +9,7 @@
   --background-color: #fff;
   --background-color-panel: #f5c678;
   --input-bg: rgba(237, 237, 237, 0.7);
+  --information-color: rgba(237, 237, 237, 0.7);
   --shadow-button: 0px 0px 8px 2px rgba(70, 74, 77, 0.15);
 
   --header-image: url('../light/dogge_background.svg');

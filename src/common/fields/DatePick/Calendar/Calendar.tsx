@@ -7,7 +7,7 @@ import isNull from 'lodash/isNull';
 
 interface CalendarComponentProps {
   locale?: string;
-  onActiveStartDateChange?: (props: any) => void;
+  onActiveStartDateChange?: (props: unknown) => void;
   onChange: (date: Date) => void;
   value?: CalendarValue;
   onClose?: () => void;
@@ -18,8 +18,11 @@ const CalendarComponent: React.FC<CalendarComponentProps> = (props: CalendarComp
   const { locale, onChange } = props;
   const [activeDate, setActiveDate] = React.useState<Date | undefined>(new Date());
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleActiveStartDateChange = (props: any) => {
+    // eslint-disable-next-line react/prop-types
     if (props.action === 'prev2') return;
+    // eslint-disable-next-line react/prop-types
     isNull(props.activeDate) ? setActiveDate(undefined) : setActiveDate(props.activeDate);
   };
 

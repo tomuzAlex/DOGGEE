@@ -1,27 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import styles from './Select.module.scss';
-import { Input } from '@common/fields/inputs';
-import { useOnCLickOutside } from '@common/fields/inputs/DateInput';
 import selectSvg from '@static/images/selectArrow.svg';
-import { PetList } from '@pages/PersonalAccount/PetsList';
-
-export const options = [
-  {
-    label: 'test',
-    value: 'test',
-    option: 'test',
-  },
-  {
-    label: 'apple',
-    value: 'apple',
-    option: 'apple',
-  },
-  {
-    label: 'orange',
-    value: 'orange',
-    option: 'orange',
-  },
-];
+import { Input } from '@common/fields/inputs';
+import { SelectContext } from './SelectContext';
+import axios from 'axios';
 
 interface SelectIProps extends Omit<InputProps, 'value'> {
   value: string;
@@ -30,7 +12,6 @@ interface SelectIProps extends Omit<InputProps, 'value'> {
 interface Option {
   label: string;
   value: string;
-  option: string;
 }
 
 export const Select: React.FC<SelectIProps> = ({
@@ -39,92 +20,127 @@ export const Select: React.FC<SelectIProps> = ({
   type,
   label,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onChange,
   value,
   ...props
 }) => {
+  const { selectValue, setSelectValue } = useContext(SelectContext);
   const [showSelect, setShowSelect] = useState(false);
-  const [selectValue, setSelectValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selectRef = useRef<HTMLInputElement>(null);
-  useOnCLickOutside(selectRef, () => {
-    setShowSelect(false);
-  });
+
+  const [breeds, setBreeds] = useState<Array<Option>>([]);
+  const [userInput, setUserInput] = useState<string>(selectValue);
 
   useEffect(() => {
-    if (isFocus) setShowSelect(true);
-
-    return () => {
-      setShowSelect(false);
+    const fetchBreeds = async () => {
+      try {
+        const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
+          headers: {
+            'x-api-key': 'YOUR_API_KEY',
+          },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const breedOptions = response.data.map((breed: any) => ({
+          label: breed.name,
+          value: breed.id.toString(),
+        }));
+        setBreeds(breedOptions);
+      } catch (error) {
+        console.error('Failed to fetch breeds:', error);
+      }
     };
-  }, [selectValue, isFocus]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowUp') {
-      setSelectedIndex((prevIndex) => (prevIndex === 0 ? options.length - 1 : prevIndex - 1));
-    } else if (event.key === 'ArrowDown') {
-      setSelectedIndex((prevIndex) => (prevIndex === options.length - 1 ? 0 : prevIndex + 1));
-    } else if (event.key === 'Enter') {
-      handleOptionClick(options[selectedIndex]);
-    }
-  };
+    fetchBreeds();
+  }, []);
 
   const handleOptionClick = (option: Option) => {
+    setSelectValue(option.label);
+    setUserInput(option.label);
     setShowSelect(false);
     setIsFocus(false);
-    setSelectValue(option.value);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setUserInput(value);
+    setSelectValue(value);
+    setShowSelect(true);
+  };
+
+  const filteredBreeds = breeds.filter((breed) =>
+    breed.label.toLowerCase().includes(userInput.toLowerCase()),
+  );
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (event.key) {
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'Enter':
+        event.preventDefault();
+        break;
+    }
+
+    switch (event.key) {
+      case 'ArrowUp':
+        setSelectedIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : filteredBreeds.length - 1,
+        );
+        break;
+      case 'ArrowDown':
+        setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredBreeds.length);
+        break;
+      case 'Enter':
+        if (
+          filteredBreeds.length > 0 &&
+          selectedIndex >= 0 &&
+          selectedIndex < filteredBreeds.length
+        ) {
+          handleOptionClick(filteredBreeds[selectedIndex]);
+        }
+        break;
+    }
   };
 
   return (
     <div className={styles.select} onClick={() => setIsFocus(!isFocus)}>
-      <label className={''}></label>
       <Input
         ref={selectRef}
         className={`${styles.input}`}
         label={label}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectValue(e.target.value)}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         type={type}
         isError={isError}
         helperText={helperText}
-        value={selectValue}
+        value={userInput}
         {...props}
       />
       <img
-        onClick={() => {
-          setSelectValue('');
-          setShowSelect(!showSelect);
-        }}
         src={selectSvg}
-        alt={'select'}
-        style={{ transform: !showSelect ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        alt="Select arrow"
+        onClick={() => setShowSelect(!showSelect)}
         className={styles.selectSvg}
+        style={{ transform: showSelect ? 'rotate(0deg)' : 'rotate(180deg)' }}
       />
       {showSelect && (
         <div className={styles.option}>
-          {options
-            .filter((option) => option.label.toLowerCase().includes(selectValue.toLowerCase()))
-            .map((option, index) => (
-              <div
-                className={styles.option_container}
-                key={option.value}
-                onClick={() => handleOptionClick(option)}
-                style={{
-                  backgroundColor:
-                    index === selectedIndex
-                      ? 'var(--color-additional7)'
-                      : 'var(--color-additional)',
-                }}
-              >
-                {showSelect && option.label}
-              </div>
-            ))}
+          {filteredBreeds.map((breed, index) => (
+            <div
+              key={breed.value}
+              className={styles.option_container}
+              onClick={() => handleOptionClick(breed)}
+              style={{
+                backgroundColor:
+                  index === selectedIndex ? 'var(--color-additional7)' : 'transparent',
+              }}
+            >
+              {breed.label}
+            </div>
+          ))}
         </div>
       )}
-      <div className={styles.hidden}>
-        <PetList dogBreed={selectValue} />
-      </div>
     </div>
   );
 };
+
+export default Select;

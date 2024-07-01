@@ -4,7 +4,6 @@ import styles from './Input.module.scss';
 export const Input: React.FC<InputProps> = ({
   isError = false,
   helperText,
-  ref,
   type,
   onChange,
   mask,
@@ -13,6 +12,7 @@ export const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line no-constant-binary-expression
   const [isFocus, setIsFocus] = React.useState(!!props.value ?? false);
   // const value = props.value !== '' ? props.value : undefined;
   return (

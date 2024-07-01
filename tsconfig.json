@@ -14,9 +14,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
   },
 
-  "include": ["src", "*/**/d.ts", "src/routes.d.ts"],
+  "include": ["src", "*/**/d.ts", "src/routes.d.ts", "webpack.config.ts", "webpack.config.js"],
   "extends": "./tsconfig.paths.json"
 }

@@ -49,10 +49,10 @@
       cursor: pointer;
     }
     &_date {
-      -webkit-appearance: none; /* Hide the default icon in WebKit browsers */
-      -moz-appearance: none; /* Hide the default icon in Firefox */
-      appearance: none; /* Hide the default icon in other browsers */
-      padding-right: 20px; /* Add some padding to make space for a custom icon */
+      -webkit-appearance: none; 
+      -moz-appearance: none; 
+      appearance: none; 
+      padding-right: 20px; 
     }
   }
 }
@@ -96,10 +96,13 @@
 }
 
 .helperText {
+  display: flex;
+
   color: var(--color-text-validation);
-  font-size: 10px;
-  line-height: 14px;
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 300;
+  padding-top: 3px;
   padding-left: 10px;
 }
 

@@ -1,11 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.scss';
-
 import { Checkbox, Input, Button, PasswordInput } from '@common/fields';
 import { useForm } from '@utils/hooks';
-
 import { IntlText } from '@features/I18n';
 import { useTheme } from '@features/theming';
 import axios from 'axios';
@@ -39,15 +36,40 @@ export interface FormValue {
 }
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const { values, setFieldValue, handleSubmit } = useForm<FormValue>({
     initialValue: { username: '', password: '', isNotMyComputer: true },
     validateSchema: loginFormValidate,
     validateOnChange: false,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const { data } = await axios.get('https://66147b222fc47b4cf27c6734.mockapi.io/users');
+        const user = data.find(
+          (user: { username: string; password: string }) =>
+            user.username === values.username && user.password === values.password
+        );
+        if (user) {
+          console.log('Login successful:', user);
+          // Save login state to local storage
+          localStorage.setItem('user', JSON.stringify(user));
+          navigate('/PersonalAccount');
+        } else {
+          setFormError({
+            ...formError,
+            username: 'Invalid username or password',
+            password: 'Invalid username or password',
+          });
+        }
+      } catch (error) {
+        console.error('Login failed:', error);
+        setFormError({
+          ...formError,
+          username: 'Login failed, please try again',
+          password: 'Login failed, please try again',
+        });
+      }
     },
   });
-  console.log(values);
   const { theme, setTheme } = useTheme();
   const [formError, setFormError] = React.useState<{ [key: string]: string | null }>({
     username: null,
@@ -84,7 +106,7 @@ const LoginPage: React.FC = () => {
           <form className={styles.inputSection} onSubmit={handleSubmit}>
             <div className={styles.input}>
               <Input
-                disabled={false} // CHANGE
+                disabled={false}
                 mask={regex}
                 helperText="validation"
                 value={values.username}
@@ -134,11 +156,9 @@ const LoginPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <Link to="/PersonalAccount">
-                <Button isLoading={isLoading} type="submit">
-                  <IntlText path="button.signIn" />
-                </Button>
-              </Link>
+              <Button isLoading={isLoading} type="submit">
+                <IntlText path="button.signIn" />
+              </Button>
             </div>
           </form>
           <div className={styles.footer}>

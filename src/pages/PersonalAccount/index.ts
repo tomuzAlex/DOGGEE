@@ -1,3 +1,4 @@
 export * from './PersonalAccount'
-export * from './PersonalAccountStep2'
+export * from './PersonalAccountInformation';
+export * from './PersonalAccountPets'
 export * from './PersonalAccount.module.scss'

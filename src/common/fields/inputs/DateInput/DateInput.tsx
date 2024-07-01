@@ -4,29 +4,47 @@ import calendarSvg from '@static/images/calendar.svg';
 import { Input } from '../input/Input';
 import { Calendar } from '@common/fields/DatePick';
 import { useOnCLickOutside } from './useOnClickOutside';
-// import { format} from 'date-fns';
+import { DateContext } from './DateInputContext';
 
 interface DateInputProps extends Omit<InputProps, 'value'> {
   value: string;
-  selectedDateValue?: string;
 }
+
+export interface DateContextProps {
+  dateInputValue: string;
+}
+
+// отформатированная дата
+export const formatDate = (date: Date): string => {
+  const formatter = new Intl.DateTimeFormat('ru', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+  const parts = formatter.formatToParts(date);
+  const day = parts.find(part => part.type === 'day')?.value ?? '';
+  const month = parts.find(part => part.type === 'month')?.value ?? '';
+  const year = parts.find(part => part.type === 'year')?.value ?? '';
+
+  return `${day}.${month}.${year}`;
+};;
 
 export const DateInput: React.FC<DateInputProps> = ({
   isError = false,
   helperText,
   type,
   mask,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  value,
   label,
   ...props
 }) => {
-  const [showCalendar, setShowCalendar] = React.useState(false);
+  const { setDateInputValue } = React.useContext(DateContext);
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(new Date());
+  const [showCalendar, setShowCalendar] = React.useState(false);
   const calendarRef = React.useRef<HTMLDivElement>(null);
 
   const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
+    setDateInputValue(formatDate(date));
   };
 
   const handleCalendarClose = () => {
@@ -37,23 +55,24 @@ export const DateInput: React.FC<DateInputProps> = ({
     setShowCalendar(false);
   });
 
-
-  const formattedDate = selectedDate ? selectedDate.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
-
   return (
     <div className={styles.dateInput} ref={calendarRef}>
       <label className={styles.dateInput_label}></label>
       <Input
         className={`${styles.input}`}
         label={label}
-        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const newDate = new Date(e.target.value);
+          setSelectedDate(newDate);
+          setDateInputValue(newDate.toDateString());
+        }}
         type={type}
         mask={mask}
         isError={isError}
         helperText={helperText}
-        value={formattedDate}
         {...props}
       />
+
       <img
         onClick={() => {
           setShowCalendar(!showCalendar);

@@ -5,7 +5,7 @@ import styles from './PersonalAccount.module.scss';
 import { useForm } from '@utils/hooks';
 
 import { Button, Input } from '@common/fields';
-import { DateInput } from '@common/fields/inputs/DateInput';
+import { DateContext, DateInput } from '@common/fields/inputs/DateInput';
 import { Stepper } from '@common/wizard/Stepper';
 
 import { useTheme } from '@features/theming';
@@ -15,6 +15,7 @@ interface PersonalAccountFormValues {
   username: string;
   dateInput: string;
   select: string;
+  dogWeight?: string;
   location: string;
 }
 
@@ -69,6 +70,9 @@ export const PersonalAccount: React.FC = () => {
     select: null,
   });
   const regex = /^[a-zA-Z0-9]+$/g;
+
+  const { dateInputValue } = React.useContext(DateContext)
+
   return (
     <>
       <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>change theme</button>
@@ -77,7 +81,7 @@ export const PersonalAccount: React.FC = () => {
           <div className={styles.container_form}>
             <h1 className={styles.container_form_title}>Lets Fill Your profile</h1>
             <div className={styles.container_stepper}>
-              <Stepper activeSteps={3} stepLabels={['Your profile', 'Your pets', 'WoOf!']} />
+              <Stepper activeSteps={1} stepLabels={['Your profile', 'Your pets', 'WoOf!']} />
             </div>
             <div className={styles.goBackSection}>
               <Link to="/registration">
@@ -126,21 +130,15 @@ export const PersonalAccount: React.FC = () => {
                 <DateInput
                   label="Choose your date of birth"
                   type="text"
-                  value={values.dateInput}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const dateInput = e.target.value;
-                    setFieldValue('dateInput', dateInput);
-
-                    const error = validateLoginForm('username', dateInput);
-                    setFormError({ ...formError, dateInput: error });
-                  }}
+                  value={dateInputValue}
+      
                   {...(!!formError.password && {
                     isError: !!formError.password,
                     helperText: formError.password,
                   })}
                 />
               </div>
-              <Link to="/PersonalAccountStep2">
+              <Link to="/PersonalAccountPets">
                 <Button className={styles.button_done} type="submit">
                   <IntlText path="button.next" />
                 </Button>

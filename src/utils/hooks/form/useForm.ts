@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 
 interface useFormParams<Values> {
@@ -6,6 +7,7 @@ interface useFormParams<Values> {
     [K in keyof Values]?: (value: Pick<Values, K>[K]) => string | null;
   };
   validateOnChange?: boolean;
+  validate?: (values: Values) => void;
   onSubmit?: (value: Values) => void;
 }
 
@@ -23,7 +25,7 @@ export const useForm = <Values>({
     const validateSchemaExistForField = !!validateSchema && !!validateSchema[field];
     if (!validateSchemaExistForField && validateOnChange) return;
     else {
-      //@ts-ignore
+      //@ts-expect-error
       const error = validateSchema[field](value);
       setErrors({ ...errors, [field]: error });
     }
